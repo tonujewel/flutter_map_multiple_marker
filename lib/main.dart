@@ -12,23 +12,25 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   Completer<GoogleMapController> _controller = Completer();
 
   Iterable markers = [];
 
   Iterable _markers = Iterable.generate(AppConstant.list.length, (index) {
     return Marker(
-      markerId: MarkerId(AppConstant.list[index]['id']),
-      position: LatLng(
-        AppConstant.list[index]['lat'],
-        AppConstant.list[index]['lon'],
-      ),
-      infoWindow: InfoWindow(title: AppConstant.list[index]["title"])
-    );
+        markerId: MarkerId(AppConstant.list[index]['id']),
+        position: LatLng(
+          AppConstant.list[index]['lat'],
+          AppConstant.list[index]['lon'],
+        ),
+        infoWindow: InfoWindow(title: AppConstant.list[index]["title"]));
   });
 
-
+  GoogleMapController mapController;
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+   // mapController.setMapStyle('[{"featureType": "all","stylers": [{ "color": "#C0C0C0" }]},{"featureType": "road.arterial","elementType": "geometry","stylers": [{ "color": "#CCFFFF" }]},{"featureType": "landscape","elementType": "labels","stylers": [{ "visibility": "off" }]}]');
+  }
 
   @override
   void initState() {
@@ -49,9 +51,7 @@ class _MyAppState extends State<MyApp> {
         body: GoogleMap(
           mapType: MapType.normal,
           initialCameraPosition: CameraPosition(target: LatLng(23.7985053, 90.3842538), zoom: 13),
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          },
+          onMapCreated: _onMapCreated,
           markers: Set.from(markers),
         ),
       ),
